@@ -13,46 +13,66 @@ $(document).ready(function() {
     whatClose: $("a.close").click(function() {
       $(".overlay").fadeOut(1000);
     }),
+
     guess: $('form').submit(function(event) {
       event.preventDefault();      
       var guess = parseInt($('input#userGuess').val());
-      $('ul#guessList').append('<li>' + guess + '</li>');
-      var diff = gameObj.findAbs(gameObj.answer, guess);
-      gameObj.findTemp(diff);
-      gameObj.duplicateAlert(guess);
-      gameObj.guessCount();
-      console.log(gameObj.guesses);
+      if (!Number.isInteger(guess)) {
+        alert('Please enter a number');
+      } else{
+        if(gameObj.betweenVerify(guess) || gameObj.duplicateAlert(guess)){
+          return;
+        }
+        $('ul#guessList').append('<li>' + guess + '</li>');
+        var diff = gameObj.findAbs(gameObj.answer, guess);
+        gameObj.findTemp(diff);
+        gameObj.findDirection(gameObj.answer, guess);      
+        gameObj.guessCount();
+      }
+      // console.log(gameObj.guesses);
     }),
     findAbs: function(answer, userGuess) {
       var abs = Math.abs(answer - userGuess);
       return abs;
     },
-    findDiff: function(answer, userGuess) {
-      var diff = answer - userGuess;
-      var 
-      if (gameObj.diff === 0 || diff ==== 0) {
-        return '';
-      } else if (diff > 0) {
-
+    findDirection: function(answer, userGuess) {
+      var diff = gameObj.findAbs(answer, userGuess);
+      console.log('findDirection diff: ' + diff);
+      console.log('gameObj.diff: ' + gameObj.diff);
+      var directionDiff = diff - gameObj.diff;
+      console.log('directionDiff: ' + directionDiff)
+      if (gameObj.diff === 0 || diff === 0) {
+        gameObj.renderDirection('!');
+        gameObj.diff = diff;
+      } else if (diff > 0 && directionDiff < 0) {
+          gameObj.diff = diff;
+          gameObj.renderDirection(' and Getting Warmer!');
+      } else if (diff > 0 && directionDiff > 0) {
+          gameObj.diff = diff;
+          gameObj.renderDirection(' and Getting Colder!');
       }
+    },
+    renderDirection: function(direction) {
+      var text = $('#feedback').text();
+      $('#feedback').text(text + direction);
     },
     findTemp: function(diff) {
       if (diff >= 50) {
-        gameObj.renderTemp('Ice Cold!');
+        gameObj.renderTemp('Ice Cold');
       } else if (diff < 50 && diff >= 30) {
-        gameObj.renderTemp('Pretty Cold!');
+        gameObj.renderTemp('Pretty Cold');
       } else if (diff < 30 && diff >= 20) {
-        gameObj.renderTemp('Cold!');
+        gameObj.renderTemp('Cold');
       } else if (diff < 20 && diff >= 15) {
-        gameObj.renderTemp('Warm!');
+        gameObj.renderTemp('Warm');
       } else if (diff < 15 && diff >= 10) {
-        gameObj.renderTemp('Hot!');
+        gameObj.renderTemp('Hot');
       } else if (diff < 10 && diff >= 5) {
-        gameObj.renderTemp('Pretty Hot!');
+        gameObj.renderTemp('Pretty Hot');
       } else if (diff < 5 && diff >= 1) {
-        gameObj.renderTemp('Red Hot!');
+        gameObj.renderTemp('Red Hot');
       } else if (diff === 0) {
-        gameObj.renderTemp('You Got It!');
+        gameObj.renderTemp('You Got It');
         $('body').css('background-color', '#f38254');
       };
     },
@@ -65,6 +85,7 @@ $(document).ready(function() {
     },
     newGame: function() {
       gameObj.answer = 0;
+      gameObj.diff = 0;
       $('#count').text('0');
       $('ul#guessList').html('');
       $('input#userGuess').attr('placeholder', "Enter your Guess").val("").focus();
@@ -78,9 +99,16 @@ $(document).ready(function() {
     duplicateAlert: function(guess) {
       if(gameObj.guesses.indexOf(guess) !== -1){
         alert("You already guessed that number!");
+        return true;
       } else {
         gameObj.guesses.push(guess);
       }
+    },
+    betweenVerify: function(guess) {
+      if(guess < 1 || guess > 100) {
+        alert('Please Enter a Number Between 1 and 100!')
+        return true;
+      };
     }
   };
   
