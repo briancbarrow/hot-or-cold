@@ -47,7 +47,7 @@ $(document).ready(function() {
       } else if (diff > 0 && directionDiff < 0) {
           gameObj.diff = diff;
           gameObj.renderDirection(' and Getting Warmer!');
-      } else if (diff > 0 && directionDiff > 0) {
+      } else if (diff > 0 && directionDiff >= 0) {
           gameObj.diff = diff;
           gameObj.renderDirection(' and Getting Colder!');
       }
