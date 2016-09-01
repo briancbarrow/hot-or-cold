@@ -310,6 +310,7 @@ ul.guessBox {
 }
 ul.guessBox li {
 	display: inline;
+	position: relative;
 	background-color: #1a4e95;
 	padding: 0.3em;
 	-webkit-border-radius: 4px;
