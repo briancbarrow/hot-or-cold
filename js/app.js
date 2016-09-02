@@ -1,9 +1,10 @@
 $(document).ready(function() {
   gameObj = {
     answer: 0,
-    diff: 0,
+    diff: 0,    
+    guesses: [],
     randomNumber: function() {
-      gameObj.answer = Math.floor(Math.random() * (100 - 1)) + 1;
+      this.answer = Math.floor(Math.random() * (100 - 1)) + 1;
     },
     /*--- Display information modal box ---*/
     what: $(".what").click(function() {
@@ -29,7 +30,6 @@ $(document).ready(function() {
         gameObj.findDirection(gameObj.answer, guess);      
         gameObj.guessCount();
       }
-      // console.log(gameObj.guesses);
     }),
     findAbs: function(answer, userGuess) {
       var abs = Math.abs(answer - userGuess);
@@ -37,10 +37,7 @@ $(document).ready(function() {
     },
     findDirection: function(answer, userGuess) {
       var diff = gameObj.findAbs(answer, userGuess);
-      console.log('findDirection diff: ' + diff);
-      console.log('gameObj.diff: ' + gameObj.diff);
       var directionDiff = diff - gameObj.diff;
-      console.log('directionDiff: ' + directionDiff)
       if (gameObj.diff === 0 || diff === 0) {
         gameObj.renderDirection('!');
         gameObj.diff = diff;
@@ -93,9 +90,7 @@ $(document).ready(function() {
       $('body').css('background-color', '#1F253D');   
       gameObj.guesses = [];   
       gameObj.randomNumber();
-      console.log(gameObj.answer)
     },
-    guesses: [],
     duplicateAlert: function(guess) {
       if(gameObj.guesses.indexOf(guess) !== -1){
         alert("You already guessed that number!");
@@ -111,8 +106,6 @@ $(document).ready(function() {
       };
     }
   };
-  
-  console.log(gameObj.answer);
   $('.new').click(function(){
     gameObj.newGame()
   });
